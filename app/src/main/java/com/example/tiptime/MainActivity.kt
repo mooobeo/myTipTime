@@ -1,9 +1,12 @@
 package com.example.tiptime
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.example.tiptime.databinding.ActivityMainBinding
 import java.text.NumberFormat
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -17,16 +20,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun calculateTip() {
-        val stringCostOfService = binding.etCostOfService.text.toString()
-        val cost = stringCostOfService.toDouble()
-        val rgId = binding.optionsTip.checkedRadioButtonId
-        val tipPercentage = when (rgId) {
+        val costString = binding.etCostOfService.text
+        if (costString.isEmpty()) {
+            Toast.makeText(
+                this,
+                "Please input Integer Number in Cost of Service !",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+        val stringCostOfService = costString.toString()
+        val cost: Double = stringCostOfService.toDouble()
+        val tipPercentage: Double = when (binding.optionsTip.checkedRadioButtonId) {
             R.id.option_twenty_percent -> 0.20
             R.id.option_eighteen_percent -> 0.18
             R.id.option_fifteen_percent -> 0.15
-            else -> 0
+            else -> 0.0
         }
-        var tip = tipPercentage * cost
+        var tip: Double = tipPercentage * cost
 
         val roundUp = binding.switchOfRoundUp.isChecked
 
@@ -34,8 +45,11 @@ class MainActivity : AppCompatActivity() {
             tip = kotlin.math.ceil(tip)
         }
 
-        val formattedTip = NumberFormat.getCurrencyInstance().format(tip)
+        val formattedTip: String = NumberFormat.getCurrencyInstance().format(tip)
 
-        binding.tipResult.text = getString(R.string.tip_amount, formattedTip)
+        binding.resultTip.text = this.getString(
+            R.string.tip_amount,
+            formattedTip
+        )
     }
 }
