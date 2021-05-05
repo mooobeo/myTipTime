@@ -7,22 +7,46 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/icon_cost_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/et_cost_of_service"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_cost_of_service"
+        app:srcCompat="@drawable/ic_store"
+        tools:layout_editor_absoluteX="-8dp"
+        tools:layout_editor_absoluteY="7dp" />
+
     <EditText
         android:id="@+id/et_cost_of_service"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:autofillHints=""
         android:hint="@string/cost_of_service"
         android:inputType="numberDecimal"
+        app:layout_constraintStart_toEndOf="@id/icon_cost_service"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageView
+        android:id="@+id/icon_service_question"
+        style="@style/Widget.TipTime.TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/tv_question"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_question"
+        app:srcCompat="@drawable/ic_service" />
 
     <TextView
         android:id="@+id/tv_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/how_was_the_service"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_cost_of_service"
         app:layout_constraintTop_toBottomOf="@id/et_cost_of_service" />
 
     <RadioGroup
@@ -31,7 +55,7 @@
         android:layout_height="wrap_content"
         android:checkedButton="@id/option_twenty_percent"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_question"
         app:layout_constraintTop_toBottomOf="@id/tv_question">
 
         <RadioButton
@@ -53,30 +77,45 @@
             android:text="@string/okay_15" />
     </RadioGroup>
 
+    <ImageView
+        android:id="@+id/icon_round_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/switch_of_round_up"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/switch_of_round_up"
+        app:srcCompat="@drawable/ic_round_up" />
+
     <Switch
         android:id="@+id/switch_of_round_up"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:checked="true"
         android:text="@string/round_up_tip"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_round_up"
         app:layout_constraintTop_toBottomOf="@id/options_tip" />
 
     <Button
         android:id="@+id/button_calculate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/calculate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/switch_of_round_up"
         app:layout_constraintTop_toBottomOf="@id/switch_of_round_up" />
 
     <TextView
         android:id="@+id/result_tip"
+        style="@style/Widget.TipTime.TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_calculate"
         tools:text="Tip Amount: $10" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
