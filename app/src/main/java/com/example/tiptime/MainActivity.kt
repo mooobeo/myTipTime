@@ -1,29 +1,52 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.tiptime
 
-import android.annotation.SuppressLint
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.tiptime.databinding.ActivityMainBinding
 import java.text.NumberFormat
 
-
+/**
+ * Activity that displays a tip calculator.
+ */
 class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+
+    // Binding object instance with access to the views in the activity_main.xml layout
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
+
+        // Inflate the layout XML file and return a binding object instance
         binding = ActivityMainBinding.inflate(layoutInflater)
 
+        // Set the content view of the Activity to be the root view of the layout
         setContentView(binding.root)
 
-        binding.buttonCalculate.setOnClickListener { calculateTip() }
+        // Setup a click listener on the calculate button to calculate the tip
+        binding.calculateButton.setOnClickListener { calculateTip() }
 
-        binding.etCostOfService.setOnKeyListener { view, keyCode, _ ->
+        // Set up a key listener on the EditText field to listen for "enter" button presses
+        binding.costOfServiceEditText.setOnKeyListener { view, keyCode, _ ->
             handleKeyEvent(
                 view,
                 keyCode
@@ -31,40 +54,55 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun calculateTip() {
-        val costString = binding.etCostOfService.text
-        if (costString.isEmpty()) {
-            Toast.makeText(
-                this,
-                "Please input Integer Number in Cost of Service !",
-                Toast.LENGTH_SHORT
-            ).show()
+    /**
+     * Calculates the tip based on the user input.
+     */
+    private fun calculateTip() {
+        // Get the decimal value from the cost of service EditText field
+        val stringInTextField = binding.costOfServiceEditText.text.toString()
+        val cost = stringInTextField.toDoubleOrNull()
+
+        // If the cost is null or 0, then display 0 tip and exit this function early.
+        if (cost == null || cost == 0.0) {
+            displayTip(0.0)
             return
         }
-        val stringCostOfService = costString.toString()
-        val cost: Double = stringCostOfService.toDouble()
-        val tipPercentage: Double = when (binding.optionsTip.checkedRadioButtonId) {
+
+        // Get the tip percentage based on which radio button is selected
+        val tipPercentage = when (binding.tipOptions.checkedRadioButtonId) {
             R.id.option_twenty_percent -> 0.20
             R.id.option_eighteen_percent -> 0.18
-            R.id.option_fifteen_percent -> 0.15
-            else -> 0.0
+            else -> 0.15
         }
-        var tip: Double = tipPercentage * cost
 
-        val roundUp = binding.switchOfRoundUp.isChecked
+        // Calculate the tip
+        var tip = tipPercentage * cost
 
+        // If the switch for rounding up the tip toggled on (isChecked is true), then round up the
+        // tip. Otherwise do not change the tip value.
+        val roundUp = binding.roundUpSwitch.isChecked
         if (roundUp) {
+            // Take the ceiling of the current tip, which rounds up to the next integer, and store
+            // the new value in the tip variable.
             tip = kotlin.math.ceil(tip)
         }
 
-        val formattedTip: String = NumberFormat.getCurrencyInstance().format(tip)
-
-        binding.resultTip.text = this.getString(
-            R.string.tip_amount,
-            formattedTip
-        )
+        // Display the formatted tip value onscreen
+        displayTip(tip)
     }
 
+    /**
+     * Format the tip amount according to the local currency and display it onscreen.
+     * Example would be "Tip Amount: $10.00".
+     */
+    private fun displayTip(tip: Double) {
+        val formattedTip = NumberFormat.getCurrencyInstance().format(tip)
+        binding.tipResult.text = getString(R.string.tip_amount, formattedTip)
+    }
+
+    /**
+     * Key listener for hiding the keyboard when the "Enter" button is tapped.
+     */
     private fun handleKeyEvent(view: View, keyCode: Int): Boolean {
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
             // Hide the keyboard
